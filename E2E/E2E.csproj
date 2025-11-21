@@ -10,13 +10,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="allure-results\**" />
+    <EmbeddedResource Remove="allure-results\**" />
+    <None Remove="allure-results\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\mpslu\.nuget\packages\allure.net.commons\2.14.1\contentFiles\any\netstandard2.0\allureConfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Allure.Net.Commons" Version="2.14.1" />
     <PackageReference Include="Allure.NUnit" Version="2.14.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
