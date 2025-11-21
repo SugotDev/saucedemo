@@ -75,7 +75,7 @@ namespace E2E.Tests
             {
                 var errorMessage = await loginPage.GetErrorMessage();
                 Assert.That(errorMessage, Is.EqualTo(expectedErrorMessage));
-            }, "Verify page title");
+            }, "Verify error message");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Allure.Net.Commons;
+using E2E.Pages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
@@ -29,6 +30,17 @@ namespace E2E
             });
 
             Page = await Context.NewPageAsync();
+
+        }
+        protected async Task LoginAsStandardUser()
+        {
+            var loginPage = new LoginPage(Page);
+            var username = _config["Credentials:Username"];
+            var password = _config["Credentials:Password"];
+            var baseUrl = _config["BaseUrl"];
+
+            await Page.GotoAsync(baseUrl);
+            await loginPage.Login(username, password);
         }
 
         [TearDown]
