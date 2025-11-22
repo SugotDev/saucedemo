@@ -1,6 +1,7 @@
 ﻿using Allure.Net.Commons;
 using Allure.NUnit.Attributes;
 using E2E.Pages;
+using E2E.TestData;
 using NUnit.Allure.Core;
 
 namespace E2E.Tests
@@ -20,7 +21,8 @@ namespace E2E.Tests
         {
             //Arrange
             var itemsPage = new ItemsPage(Page);
-            var itemName = "Sauce Labs Backpack";
+            var item = ItemsData.Backpack;
+            var itemName = item.Name;
 
             //Act
             await _allure.WrapInStepAsync(async () =>
@@ -53,7 +55,8 @@ namespace E2E.Tests
         {
             //Arrange
             var itemsPage = new ItemsPage(Page);
-            var itemName = "Sauce Labs Backpack";
+            var item = ItemsData.Backpack;
+            var itemName = item.Name;
 
             //Act
             await _allure.WrapInStepAsync(async () =>
@@ -86,10 +89,11 @@ namespace E2E.Tests
         {
             //Arrange
             var itemsPage = new ItemsPage(Page);
-            var itemName = "Sauce Labs Backpack";
-            var itemDescription = "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.";
-            var itemPrice = "$29.99";
-            var itemImageSrc = "/static/media/sauce-backpack-1200x1500";
+            var item = ItemsData.Backpack;
+            var itemName = item.Name;
+            var itemDescription = item.Description;
+            var itemPrice = item.Price;
+            var itemImageSrc = item.ImageSrc;
             var itemsCount = 6;
             //Act
             await _allure.WrapInStepAsync(async () =>
@@ -105,24 +109,26 @@ namespace E2E.Tests
             {
                 Assert.That(await itemsPage.GetItemsCount(), Is.EqualTo(itemsCount), "There should be at least one item on the items page.");
             }, "Verify items count");
+
             await _allure.WrapInStepAsync(async () =>
             {
                 Assert.That(itemNames, Does.Contain(itemName), $"Item names should contain '{itemName}'.");
             }, "Verify item name");
+
             await _allure.WrapInStepAsync(async () =>
             {
                 Assert.That(itemDescriptions, Does.Contain(itemDescription), $"Item descriptions should contain '{itemDescription}'.");
             }, "Verify item description");
+
             await _allure.WrapInStepAsync(async () =>
             {
                 Assert.That(itemPrices, Does.Contain(itemPrice), $"Item prices should contain '{itemPrice}'.");
             }, "Verify item price");
+
             await _allure.WrapInStepAsync(async () =>
             {
                 Assert.DoesNotThrowAsync(async () => await itemsPage.GetItemImage(itemImageSrc), $"Item with image source '{itemImageSrc}' should be present.");
             }, "Verify item image");
-
-
         }
     }
 }

@@ -9,14 +9,17 @@ namespace E2E.Pages
         private ILocator ItemNames => _page.Locator(".inventory_item_name");
         private ILocator ItemDescriptions => _page.Locator(".inventory_item_desc");
         private ILocator ItemPrices => _page.Locator(".inventory_item_price");
-        private ILocator AddToCartButtons => _page.Locator("button#add-to-cart-sauce-labs-backpack");
-        private ILocator RemoveButtons => _page.Locator("button#remove-sauce-labs-backpack");
+        private ILocator ProductCards => _page.Locator(".inventory_item");
         private ILocator ShoppingCartLink => _page.Locator(".shopping_cart_badge");
         public ItemsPage(IPage page)
         {
             _page = page;
         }
 
+        public async Task GoToCart()
+        {
+            await _page.Locator(".shopping_cart_link").ClickAsync();
+        }
         public async Task<int> GetItemsCount()
         {
             return await ItemNames.CountAsync();
@@ -66,32 +69,51 @@ namespace E2E.Pages
         }
         public async Task AddItemToCartByName(string itemName)
         {
-            var count = await ItemNames.CountAsync();
+            int count = await ProductCards.CountAsync();
+
             for (int i = 0; i < count; i++)
             {
-                var name = await ItemNames.Nth(i).InnerTextAsync();
+                var card = ProductCards.Nth(i);
+                var name = await card.Locator(".inventory_item_name").InnerTextAsync();
+
                 if (name.Equals(itemName, StringComparison.OrdinalIgnoreCase))
                 {
-                    await AddToCartButtons.Nth(i).ClickAsync();
+                    var button = card.Locator("button");
+                    var buttonText = await button.InnerTextAsync();
+
+                    if (buttonText.Equals("Add to cart", StringComparison.OrdinalIgnoreCase))
+                    {
+                        await button.ClickAsync();
+                    }
+
                     return;
                 }
             }
-            throw new Exception($"Item with name '{itemName}' not found.");
+
+            throw new Exception($"Item '{itemName}' not found.");
         }
+
         public async Task RemoveItemFromCartByName(string itemName)
         {
-            var count = await ItemNames.CountAsync();
+            int count = await ProductCards.CountAsync();
+
             for (int i = 0; i < count; i++)
             {
-                var name = await ItemNames.Nth(i).InnerTextAsync();
+                var card = ProductCards.Nth(i);
+                var name = await card.Locator(".inventory_item_name").InnerTextAsync();
+
                 if (name.Equals(itemName, StringComparison.OrdinalIgnoreCase))
                 {
-                    await RemoveButtons.Nth(i).ClickAsync();
+                    var button = card.Locator("button");
+
+                    await button.ClickAsync();
                     return;
                 }
             }
+
             throw new Exception($"Item with name '{itemName}' not found.");
         }
+
         public async Task<int> GetCartItemCount()
         {
             var isVisible = await ShoppingCartLink.IsVisibleAsync();
