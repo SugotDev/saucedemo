@@ -13,7 +13,7 @@ namespace E2E.TestData
 
         public static readonly Product BikeLight = new Product(
             "Sauce Labs Bike Light",
-            "A red light isn't the desired state in testing but it sure helps when riding your bike at night.",
+            "A red light isn't the desired state in testing but it sure helps when riding your bike at night. Water-resistant with 3 lighting modes, 1 AAA battery included.",
             "$9.99",
             "/static/media/bike-light-1200x1500"
         );
@@ -27,8 +27,8 @@ namespace E2E.TestData
 
         public static readonly Product Jacket = new Product(
             "Sauce Labs Fleece Jacket",
-            "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.",
-            "$29.99",
+            "It's not every day that you come across a midweight quarter-zip fleece jacket capable of handling everything from a relaxing day outdoors to a busy day at the office.",
+            "$49.99",
             "/static/media/sauce-pullover-1200x1500"
         );
 
@@ -38,5 +38,15 @@ namespace E2E.TestData
             "$7.99",
             "/static/media/red-onesie-1200x1500"
         );
+
+        public static IEnumerable<Product> AllItems =>
+            new List<Product>
+            {
+                Backpack,
+                BikeLight,
+                BoltTShirt,
+                Jacket,
+                Onesie
+            };
     }
 }

@@ -1,16 +1,16 @@
 ﻿using Allure.Net.Commons;
+using Allure.NUnit;
 using Allure.NUnit.Attributes;
+using E2E.Models;
 using E2E.Pages;
 using E2E.TestData;
-using NUnit.Allure.Core;
 
 namespace E2E.Tests
 {
     [AllureNUnit]
-    [Obsolete]
     public class CartTests : BaseTest
     {
-        [Test]
+        [Test, TestCaseSource(typeof(ItemsData), nameof(ItemsData.AllItems))]
         [AllureTag("E2E")]
         [AllureSeverity(SeverityLevel.critical)]
         [AllureOwner("Michał Sługocki")]
@@ -18,62 +18,61 @@ namespace E2E.Tests
         [AllureSubSuite("Positive Tests")]
         [AllureFeature("Check Cart")]
 
-        public async Task CheckCartItemCount()
+        public async Task CheckCartItemCount(Product item)
         {
             //Arrange
             var itemsPage = new ItemsPage(Page);
             var cartPage = new CartPage(Page);
-            var item = ItemsData.Backpack;
             var itemName = item.Name;
             var itemDescription = item.Description;
             var itemPrice = item.Price;
             var itemsCount = 1;
 
             //Act
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Login by standard user", async () =>
             {
                 await LoginAsStandardUser();
-            }, "Login by standard user");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step($"Add item '{itemName}' to cart", async () =>
             {
                 await itemsPage.AddItemToCartByName(itemName);
-            }, $"Add item '{itemName}' to cart");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Navigate to Cart Page", async () =>
             {
                 await itemsPage.GoToCart();
-            }, "Navigate to Cart Page");
+            });
 
             var itemNames = await itemsPage.GetItemNames();
             var itemDescriptions = await itemsPage.GetItemDescriptions();
             var itemPrices = await itemsPage.GetItemPrices();
 
             //Assert
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Check Item Count in Cart", async () =>
             {
                 Assert.That(await cartPage.GetCartItemCount(), Is.EqualTo(itemsCount), "Cart item count should be 1 after adding an item.");
-            }, "Check Item Count in Cart");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify items count", async () =>
             {
                 Assert.That(await itemsPage.GetItemsCount(), Is.EqualTo(itemsCount), "There should be at least one item on the items page.");
-            }, "Verify items count");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify item name", async () =>
             {
                 Assert.That(itemNames, Does.Contain(itemName), $"Item names should contain '{itemName}'.");
-            }, "Verify item name");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify item description", async () =>
             {
                 Assert.That(itemDescriptions, Does.Contain(itemDescription), $"Item descriptions should contain '{itemDescription}'.");
-            }, "Verify item description");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify item price", async () =>
             {
                 Assert.That(itemPrices, Does.Contain(itemPrice), $"Item prices should contain '{itemPrice}'.");
-            }, "Verify item price");
+            });
         }
 
         [Test]
@@ -97,66 +96,66 @@ namespace E2E.Tests
             var seconditemPrice = secondItem.Price;
             var itemsCount = 2;
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Login by standard user", async () =>
             {
                 await LoginAsStandardUser();
-            }, "Login by standard user");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step($"Add item '{itemName}' to cart", async () =>
             {
                 await itemsPage.AddItemToCartByName(itemName);
-            }, $"Add item '{itemName}' to cart");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Navigate to Cart Page", async () =>
             {
                 await itemsPage.GoToCart();
-            }, "Navigate to Cart Page");
+            });
 
             //Act
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Navigate back to items page", async () =>
             {
                 await cartPage.ContinueShopping();
-            }, "Navigate back to items page");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step($"Add item '{secondItemName}' to cart", async () =>
             {
                 await itemsPage.AddItemToCartByName(secondItemName);
-            }, $"Add item '{secondItemName}' to cart");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Navigate to Cart Page", async () =>
             {
                 await itemsPage.GoToCart();
-            }, "Navigate to Cart Page");
+            });
 
             var itemNames = await itemsPage.GetItemNames();
             var itemDescriptions = await itemsPage.GetItemDescriptions();
             var itemPrices = await itemsPage.GetItemPrices();
 
             //Assert
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Check Item Count in Cart", async () =>
             {
                 Assert.That(await cartPage.GetCartItemCount(), Is.EqualTo(itemsCount), "Cart item count should be 2 after adding an item.");
-            }, "Check Item Count in Cart");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify items count", async () =>
             {
                 Assert.That(await itemsPage.GetItemsCount(), Is.EqualTo(itemsCount), "There should be at least two items on the items page.");
-            }, "Verify items count");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify item name", async () =>
             {
                 Assert.That(itemNames, Does.Contain(itemName), $"Item names should contain '{itemName}'.");
-            }, "Verify item name");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify item description", async () =>
             {
                 Assert.That(itemDescriptions, Does.Contain(seconditemDescription), $"Item descriptions should contain '{seconditemDescription}'.");
-            }, "Verify item description");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify item price", async () =>
             {
                 Assert.That(itemPrices, Does.Contain(seconditemPrice), $"Item prices should contain '{seconditemPrice}'.");
-            }, "Verify item price");
+            });
         }
 
 
@@ -181,47 +180,47 @@ namespace E2E.Tests
             var thirdItemName = thirdItem.Name;
             var itemsCount = 2;
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Login by standard user", async () =>
             {
                 await LoginAsStandardUser();
-            }, "Login by standard user");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step($"Add item '{itemName}' to cart", async () =>
             {
                 await itemsPage.AddItemToCartByName(itemName);
-            }, $"Add item '{itemName}' to cart");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step($"Add item '{secondItemName}' to cart", async () =>
             {
                 await itemsPage.AddItemToCartByName(secondItemName);
-            }, $"Add item '{secondItemName}' to cart");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step($"Add item '{thirdItemName}' to cart", async () =>
             {
                 await itemsPage.AddItemToCartByName(thirdItemName);
-            }, $"Add item '{thirdItemName}' to cart");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Navigate to Cart Page", async () =>
             {
                 await itemsPage.GoToCart();
-            }, "Navigate to Cart Page");
+            });
 
             //Act
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step($"Remove item '{secondItemName}' from cart", async () =>
             {
                 await cartPage.RemoveItemByName(secondItemName);
-            }, $"Remove item '{secondItemName}' from cart");
+            });
 
             //Assert
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Check Item Count in Cart", async () =>
             {
                 Assert.That(await cartPage.GetCartItemCount(), Is.EqualTo(itemsCount), "Cart item count should be 2 after adding an item.");
-            }, "Check Item Count in Cart");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify items count", async () =>
             {
                 Assert.That(await itemsPage.GetItemsCount(), Is.EqualTo(itemsCount), "There should be at least two items on the items page.");
-            }, "Verify items count");
+            });
         }
     }
 }

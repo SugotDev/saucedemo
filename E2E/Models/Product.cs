@@ -20,5 +20,10 @@ namespace E2E.Models
             Price = price;
             ImageSrc = imageSrc;
         }
+
+        public override string ToString()
+        {
+            return $"{Name} ({Price})";
+        }
     }
 }

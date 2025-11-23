@@ -1,12 +1,11 @@
 ﻿using Allure.Net.Commons;
+using Allure.NUnit;
 using Allure.NUnit.Attributes;
 using E2E.Pages;
-using NUnit.Allure.Core;
 
 namespace E2E.Tests
 {
     [AllureNUnit]
-    [Obsolete]
     public class LoginTests : BaseTest
     {
         [Test]
@@ -25,21 +24,21 @@ namespace E2E.Tests
             var baseUrl = _config["BaseUrl"];
 
             // Act
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Navigate to base URL", async () =>
             {
                 await Page.GotoAsync(baseUrl);
-            }, "Navigate to base URL");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Login by standard user", async () =>
             {
                 await loginPage.Login(username, password);
-            }, "Login by standard user");
+            });
 
             // Assert
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify page title", async () =>
             {
                 Assert.That(await Page.TitleAsync(), Is.EqualTo("Swag Labs"));
-            }, "Verify page title");
+            });
         }
 
         [Test]
@@ -56,26 +55,25 @@ namespace E2E.Tests
             var username = _config["Credentials:Username"];
             var password = "wrong_password";
             var baseUrl = _config["BaseUrl"];
-            
             var expectedErrorMessage = "Epic sadface: Username and password do not match any user in this service";
 
             // Act
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Navigate to base URL", async () =>
             {
                 await Page.GotoAsync(baseUrl);
-            }, "Navigate to base URL");
+            });
 
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Login by standard user", async () =>
             {
                 await loginPage.Login(username, password);
-            }, "Login by standard user");
+            });
 
             // Assert
-            await _allure.WrapInStepAsync(async () =>
+            await AllureApi.Step("Verify error message", async () =>
             {
                 var errorMessage = await loginPage.GetErrorMessage();
                 Assert.That(errorMessage, Is.EqualTo(expectedErrorMessage));
-            }, "Verify error message");
+            });
         }
     }
 }
